@@ -25,6 +25,10 @@ module.exports = function(clock, options){
     player.setNotes(notes, length)
   }
 
+  looper.clear = function(){
+    looper.player.clear()
+  }
+
   player.on('data', function(data){
     looper.write(data)
   })

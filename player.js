@@ -18,6 +18,10 @@ module.exports = function(clock){
     player.emit('change')
   }
 
+  player.clear = function(){
+    player.setNotes([], playback.length)
+  }
+
   player.turnOffAllNotes = function(){
     onNotes.forEach(function(note){
       player.emit('data', offNoteFor(note.data))
