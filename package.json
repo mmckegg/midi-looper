@@ -16,7 +16,7 @@
     "launchpad"
   ],
   "dependencies": {
-    "duplex": "*"
+    "through": "~2.3.4"
   },
   "author": "Matt McKegg",
   "license": "MIT"

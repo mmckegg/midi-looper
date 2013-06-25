@@ -1,4 +1,4 @@
-var Duplex = require('duplex')
+var Through = require('through')
 var BufferLoop = require('./buffer_loop')
 var Player = require('./player')
 
@@ -13,10 +13,9 @@ module.exports = function(clock, options){
     //console.log('beat', beat)
   })
 
-  var looper = Duplex().on('_data', function (data) {
+  var looper = Through(function(data){
+    this.queue(data)
     bufferLoop.write(data)
-  }).on('_end', function () {
-    d._end()
   })
 
   looper.player = player
@@ -27,7 +26,7 @@ module.exports = function(clock, options){
   }
 
   player.on('data', function(data){
-    looper._data(data)
+    looper.write(data)
   })
 
   clock.on('position', function(position){
