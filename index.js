@@ -3,6 +3,7 @@ var Recorder = require('./recorder')
 
 var getNoteDifference = require('./get_note_difference')
 var transformFunctions = require('./transforms')
+
 module.exports = function(getPosition){
 
   var playback = {notes: [], length: 8}
@@ -21,15 +22,18 @@ module.exports = function(getPosition){
     refreshOutput()
   }
 
-
   var looper = Through(function(data){
     if (!Array.isArray(data)){
       data = data.data
     }
-    this.queue(data)
+    if (data[3] == null){
+      data[3] = getPosition()
+    }
+
+    recorder.write(data)
   })
 
-  looper.pipe(recorder)
+  looper.recorder = recorder
 
   looper.transform = function(func, args){
     var args = Array.prototype.slice.call(arguments)
@@ -125,6 +129,7 @@ module.exports = function(getPosition){
       }
     }, playback)
     looper.emit('change', output)
+    looper.queue(output)
   }
 
   return looper
