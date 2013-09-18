@@ -1,6 +1,8 @@
 var Through = require('through')
 var Recorder = require('./recorder')
 
+var getNoteDifference = require('./get_note_difference')
+var transformFunctions = require('./transforms')
 module.exports = function(getPosition){
 
   var playback = {notes: [], length: 8}
@@ -126,126 +128,4 @@ module.exports = function(getPosition){
   }
 
   return looper
-
-}
-
-function getNoteDifference(oldNotes, newNotes){
-  var added = []
-  var removed = []
-
-  var handled = []
-  oldNotes.forEach(function(note){
-    var key = note[0] + '/' + note[1]
-    if (~!handled.indexOf(key)){
-      if (!newNotes.some(function(n){
-        return n[0] == note[0] && n[1] == note[1]
-      })){
-        removed.push([note[0], note[1]])
-      }
-      handled.push(key)
-    }
-  })
-
-  var handled = []
-  newNotes.forEach(function(note){
-    var key = note[0] + '/' + note[1]
-    if (~!handled.indexOf(key)){
-      if (!oldNotes.some(function(n){
-        return n[0] == note[0] && n[1] == note[1]
-      })){
-        added.push([note[0], note[1]])
-      }
-      handled.push(key)
-    }
-  })
-
-  return {
-    added: added,
-    removed: removed
-  }
-}
-
-var transformFunctions = {
-
-  suppress: function(input, keys){
-    return {
-      length: input.length,
-      notes: input.notes.filter(function(note){
-        return !~keys.indexOf(note[0] + '/' + note[1])
-      })
-    }
-  },
-
-  clear: function(input){
-    return {
-      length: input.length,
-      notes: []
-    }
-  },
-
-  notes: function(input, notes){
-    return {
-      length: input.length,
-      notes: input.notes.concat(notes)
-    }
-  },
-
-  repeat: function(input, notes, length){
-    var newNotes = []
-    var count = Math.floor(input.length / length)
-    for (var i=0;i<count;i++){
-      notes.forEach(function(note){
-        newNotes.push(noteWithPosition(note, i*length, length/2))
-      })
-    }
-    return {
-      length: input.length,
-      notes: input.notes.concat(newNotes)
-    }
-  },
-
-  offset: function(input, offset){
-    return {
-      length: input.length,
-      notes: input.notes.map(function(note){
-        return noteWithPosition(note, note[3]+offset)
-      })
-    }
-  },
-
-  loop: function(input, start, length){
-    var newNotes = []
-    var count = Math.ceil(input.length / length)
-
-    for (var i=0;i<count;i++){
-      input.notes.forEach(function(note){
-        var position = note[3] + (input.length*i)
-        if (inRange(position, start, length, input.length)){
-          newNotes.push(noteWithPosition(note, position % length, Math.min(length, note[4])))
-        }
-      })
-    }
-
-    return {
-      length: length,
-      notes: newNotes
-    }
-  }
-}
-
-function noteWithPosition(note, position, length){
-  return [note[0], note[1], note[2], position, length || note[4]]
-}
-
-function inRange(position, start, length, totalLength){
-  var end = (start + length) % totalLength
-  if (end > start){
-    return position >= start && position < end 
-  } else {
-    return position >= start || position < end 
-  }
-}
-
-function mod(a,b){
-  return ((a%b)+b)%b;
 }
