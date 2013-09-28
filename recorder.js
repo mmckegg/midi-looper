@@ -13,11 +13,11 @@ module.exports = function(){
     var key = note[0] + '/' + note[1]
 
     // set end data after notes have been grabbed
-    if (!note[2] && pendingNotes[key]){
-      var event = pendingNotes[key]
-      event.data[4] = note[3] - event.position
-      pendingNotes[key] = null
-    }
+    //if (!note[2] && pendingNotes[key]){
+    //  var event = pendingNotes[key]
+    //  event.data[4] = note[3] - event.position
+    //  pendingNotes[key] = null
+    //}
   })
 
   midiLoop.getNotes = function(position, length, preroll){
@@ -25,7 +25,7 @@ module.exports = function(){
     var sortedEvents = events.filter(function(note){
       return note[3] >= position-preroll && note[3] < position+length
     }).sort(function(a,b){
-      return a[3]-b[3]
+      return a[3]-b[3] || a[2]-b[2]
     })
 
     var noteLookup = {}
@@ -50,13 +50,14 @@ module.exports = function(){
 
     notes.forEach(function(note){
 
-      var position = note[3]
+      // cut off any unterminated notes
+      if (note[4] == null){
+        note[4] = (position + length) - note[3]
+      }
+
+      // assign relative position
       note[3] = note[3] % length
 
-      if (note[4] == null){
-        var key = note[0] + '/' + note[1]
-        pendingNotes[key] = {data: note, position: position}
-      }
     })
 
     return notes
