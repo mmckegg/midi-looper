@@ -48,17 +48,17 @@ module.exports = {
 
   loop: function(input, start, length){
     var newNotes = []
-    var count = Math.ceil(input.length / length)
+    var count = Math.ceil(length / input.length)
 
     for (var i=0;i<count;i++){
       input.notes.forEach(function(note){
         var position = note[3] + (input.length*i)
         if (inRange(position, start, length, input.length)){
-          newNotes.push(noteWithPosition(note, position % length, Math.min(length, note[4])))
+          newNotes.push(noteWithPosition(note, position % length, Math.min(length/2, note[4])))
         }
       })
     }
-
+    
     return {
       length: length,
       notes: newNotes
