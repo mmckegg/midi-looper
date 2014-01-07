@@ -4,7 +4,7 @@ module.exports = {
     return {
       length: input.length,
       notes: input.notes.filter(function(note){
-        return !~keys.indexOf(note[0] + '/' + note[1])
+        return keys && !~keys.indexOf(note[0] + '/' + note[1])
       })
     }
   },
