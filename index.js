@@ -104,7 +104,7 @@ module.exports = function(getPosition){
     undos.push(playback)
     length = length || playback.length
     setPlayback({
-      notes: recorder.getNotes(getPosition()-length, length, preroll), 
+      notes: recorder.getRange(getPosition()-length, length, preroll), 
       length: length
     })
     refreshOutput()

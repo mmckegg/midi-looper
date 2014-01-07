@@ -20,7 +20,18 @@ module.exports = function(){
     //}
   })
 
-  midiLoop.getNotes = function(position, length, preroll){
+  midiLoop.getActiveNotes = function(position, length, preroll){
+    var result = {}
+    preroll = preroll || 0
+    events.filter(function(note){
+      if (note[3] >= position-preroll && note[3] < position+length){
+        result[note[0] + '/' + note[1]] = true
+      }
+    })
+    return Object.keys(result)
+  }
+
+  midiLoop.getRange = function(position, length, preroll){
     preroll = preroll || 0
     var sortedEvents = events.filter(function(note){
       return note[3] >= position-preroll && note[3] < position+length
