@@ -80,6 +80,13 @@ module.exports = function(getPosition){
     return output
   }
 
+  looper.getLength = function(){
+    return playback.length
+  }
+
+  looper.getTransformCount = function(){
+    return transforms.length
+  }
   looper.getNotes = function(selection){
     if (selection){
       return playback.notes.filter(function(note){
