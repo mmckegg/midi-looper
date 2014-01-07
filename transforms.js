@@ -63,6 +63,22 @@ module.exports = {
       length: length,
       notes: newNotes
     }
+  },
+
+  quantize: function(input, grid, keys){
+    var newNotes = input.notes.map(function(note){
+      if (!keys || ~keys.indexOf(note[0] + '/' + note[1])){
+        var quantizePosition = Math.round(note[3] / grid) * grid
+        return noteWithPosition(note, quantizePosition)
+      } else {
+        return note
+      }
+    })
+
+    return {
+      length: input.length,
+      notes: newNotes
+    }
   }
 }
 
