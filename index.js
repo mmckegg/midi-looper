@@ -52,8 +52,8 @@ module.exports = function(getPosition){
 
   looper.bounce = function(){
     undos.push(playback)
-    setPlayback(output)
     transforms = []
+    setPlayback(output)
   }
 
   looper.undo = function(){
