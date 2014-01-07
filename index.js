@@ -87,6 +87,13 @@ module.exports = function(getPosition){
   looper.getTransformCount = function(){
     return transforms.length
   }
+
+  looper.setLength = function(length, centre){
+    undos.push(playback)
+    var start = centre ? (centre - (length/2)) % playback.length : 0
+    setPlayback(transformFunctions.loop(playback, start, length))
+  }
+
   looper.getNotes = function(selection){
     if (selection){
       return playback.notes.filter(function(note){
