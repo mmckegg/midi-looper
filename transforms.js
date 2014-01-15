@@ -46,6 +46,25 @@ module.exports = {
     }
   },
 
+  hold: function(input, start, length){
+    var newNotes = []
+    var count = Math.ceil(input.length / length)
+
+    input.notes.forEach(function(note){
+      if (inRange(note[3], start, length, input.length)){
+        for (var i=0;i<count;i++){
+          var position = note[3] + (length*i)
+          newNotes.push(noteWithPosition(note, position % input.length, Math.min(length/2, note[4])))
+        }
+      }
+    })
+        
+    return {
+      length: input.length,
+      notes: newNotes
+    }
+  },
+
   loop: function(input, start, length){
     var newNotes = []
     var count = Math.ceil(length / input.length)
