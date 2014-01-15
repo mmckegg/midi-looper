@@ -1,6 +1,9 @@
 var Through = require('through')
 
-module.exports = function(){
+module.exports = function(opt){
+
+  var exclude = opt && opt.exclude || {}
+
 
   var midiLoop = Through()
   var events = []
@@ -8,16 +11,10 @@ module.exports = function(){
   var pendingNotes = {}
 
   midiLoop.on('data', function(note){
-    events.push(note)
-
     var key = note[0] + '/' + note[1]
-
-    // set end data after notes have been grabbed
-    //if (!note[2] && pendingNotes[key]){
-    //  var event = pendingNotes[key]
-    //  event.data[4] = note[3] - event.position
-    //  pendingNotes[key] = null
-    //}
+    if (!exclude[key]){
+      events.push(note)
+    }
   })
 
   midiLoop.getActiveNotes = function(position, length, preroll){

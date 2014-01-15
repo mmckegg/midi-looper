@@ -4,12 +4,12 @@ var Recorder = require('./recorder')
 var getNoteDifference = require('./get_note_difference')
 var transformFunctions = require('./transforms')
 
-module.exports = function(getPosition){
+module.exports = function(getPosition, opt){
 
   var playback = {notes: [], length: 8}
   var output = playback
 
-  var recorder = Recorder(getPosition)
+  var recorder = Recorder(opt)
 
   var transforms = []
 
@@ -29,7 +29,7 @@ module.exports = function(getPosition){
     if (data[3] == null){
       data[3] = getPosition()
     }
-
+    
     recorder.write(data)
   })
 
