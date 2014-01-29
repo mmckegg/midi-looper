@@ -20,11 +20,12 @@ module.exports = function(opt){
   midiLoop.getActiveNotes = function(position, length, preroll){
     var result = {}
     preroll = preroll || 0
-    events.filter(function(note){
+    for (var i=0, ii=events.length; i<ii; i++){
+      var note = events[i]
       if (note[3] >= position-preroll && note[3] < position+length){
         result[note[0] + '/' + note[1]] = true
       }
-    })
+    }
     return Object.keys(result)
   }
 
