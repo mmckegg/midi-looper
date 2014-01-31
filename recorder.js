@@ -37,31 +37,50 @@ module.exports = function(opt){
       return a[3]-b[3] || a[2]-b[2]
     })
 
+    var duplicateCheck = {}
+
     var noteLookup = {}
     var notes = []
 
     sortedEvents.forEach(function(note){
 
       var key = note[0] + '/' + note[1]
+      var dupKey = key + '/' + note[2] + '/' + note[3]
 
-      if (note[2]){
-        var newNote = noteWithPosition(note, note[3])
-        notes.push(newNote)
-        noteLookup[key] = newNote
-      } else {
+      if (!duplicateCheck[dupKey]){
+        duplicateCheck[dupKey] = note
+
         var existingNote = noteLookup[key]
-        if (existingNote){
+        if (existingNote){ // terminate existing note
           noteLookup[key] = null
           existingNote[4] = note[3] - existingNote[3]
+        }
+
+        if (note[2]){ // note on
+          var newNote = noteWithPosition(note, note[3])
+          notes.push(newNote)
+          noteLookup[key] = newNote
         }
       }
     })
 
-    notes.forEach(function(note){
+    // loop back over and fulfil remaining unterminated notes
+    sortedEvents.forEach(function(note){
+      var key = note[0] + '/' + note[1]
+      var existingNote = noteLookup[key]
+      if (existingNote){
+        noteLookup[key] = null
+        existingNote[4] = length + note[3] - existingNote[3]
+      }
+    })
 
-      // cut off any unterminated notes
+    // apply absolute positions
+    notes.forEach(function(note){
+      var key = note[0] + '/' + note[1]
+
+      // trim any remaining unterminated notes
       if (note[4] == null){
-        note[4] = (position + length) - note[3]
+        note[4] = length
       }
 
       // assign relative position
