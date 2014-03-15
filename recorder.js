@@ -1,5 +1,8 @@
 var Through = require('through')
 
+var retainThreshold = 4*16
+var trimDelay = 8
+
 module.exports = function(opt){
 
   var exclude = opt && opt.exclude || {}
@@ -9,13 +12,37 @@ module.exports = function(opt){
   var events = []
 
   var pendingNotes = {}
+  var oldestTime = Infinity
 
   midiLoop.on('data', function(note){
     var key = note[0] + '/' + note[1]
     if (!exclude[key]){
       events.push(note)
+
+      if (note[3] < oldestTime){
+        oldestTime = note[3]
+      }
+    }
+
+    // clean up old events periodically
+    if (note[3] - retainThreshold + trimDelay > oldestTime){
+      trimEvents(note[3] - retainThreshold)
     }
   })
+
+  function trimEvents(position){
+    console.log('from', events.length)
+    for (var i=0, ii=events.length; i<ii; i++){
+      var note = events[i]
+      if (note[3] > position){
+        break
+      }
+    }
+    events = events.slice(i)
+    oldestTime = events[0] && events[0][3] || Infinity
+    console.log('to', events.length)
+  }
+
 
   midiLoop.getActiveNotes = function(position, length, preroll){
     var result = {}
