@@ -31,7 +31,6 @@ module.exports = function(opt){
   })
 
   function trimEvents(position){
-    console.log('from', events.length)
     for (var i=0, ii=events.length; i<ii; i++){
       var note = events[i]
       if (note[3] > position){
@@ -40,7 +39,6 @@ module.exports = function(opt){
     }
     events = events.slice(i)
     oldestTime = events[0] && events[0][3] || Infinity
-    console.log('to', events.length)
   }
 
 
