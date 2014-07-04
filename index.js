@@ -33,6 +33,8 @@ module.exports = function(getPosition, opt){
     recorder.write(data)
   })
 
+  looper.params = opt || {}
+
   looper.recorder = recorder
 
   looper.transform = function(func, args){
