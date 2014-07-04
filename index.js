@@ -39,6 +39,7 @@ module.exports = function(getPosition, opt){
     var args = Array.prototype.slice.call(arguments)
     transforms.push(args)
     refreshOutput()
+    process.nextTick(function(){ looper.emit('transform') })
     return function(refresh){ // release function
       var index = transforms.indexOf(args)
       if (~index){
@@ -53,6 +54,7 @@ module.exports = function(getPosition, opt){
   looper.bounce = function(){
     undos.push(playback)
     transforms = []
+    process.nextTick(function(){ looper.emit('transform') })
     setPlayback(output)
   }
 
