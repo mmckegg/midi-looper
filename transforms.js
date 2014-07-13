@@ -23,6 +23,20 @@ module.exports = {
     }
   },
 
+  move: function(input, keys, offset){
+    var newNotes = []
+    input.notes.forEach(function(note){
+      if (~keys.indexOf(note[0] + '/' + note[1])){
+        var newNote = note.concat()
+        newNote[1] += offset
+        newNotes.push(newNote)
+      }
+    })
+    var result = module.exports.suppress(input, keys)
+    result.notes = result.notes.concat(newNotes)
+    return result
+  },
+
   repeat: function(input, notes, length){
     var newNotes = []
     var count = Math.floor(input.length / length)
