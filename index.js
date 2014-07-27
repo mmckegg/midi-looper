@@ -12,6 +12,7 @@ module.exports = function(getPosition, opt){
   var recorder = Recorder(opt)
 
   var transforms = []
+  var offset = 0
 
   var undos = []
   var redos = []
@@ -26,10 +27,12 @@ module.exports = function(getPosition, opt){
     if (!Array.isArray(data)){
       data = data.data
     }
+
     if (data[3] == null){
       data[3] = getPosition()
     }
-    
+
+    data[3] += offset
     recorder.write(data)
   })
 
@@ -92,6 +95,14 @@ module.exports = function(getPosition, opt){
     return transforms.length
   }
 
+  looper.setOffset = function(value){
+    offset = value
+  }
+
+  looper.getOffset = function(value){
+    return offset
+  }
+
   looper.setLength = function(length, centre){
     undos.push(playback)
     var start = centre ? (centre - (length/2)) % playback.length : 0
@@ -115,7 +126,7 @@ module.exports = function(getPosition, opt){
     undos.push(playback)
     length = length || playback.length
     setPlayback({
-      notes: recorder.getRange(getPosition()-length, length, preroll), 
+      notes: recorder.getRange(getPosition()+offset-length, length, preroll), 
       length: length
     })
     refreshOutput()
