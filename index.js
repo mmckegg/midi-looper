@@ -24,19 +24,6 @@ module.exports = function(getPosition, opt){
   }
 
   var looper = Through(function(data){
-    if (!Array.isArray(data)){
-      if (data.event && data.id != null){ 
-        // ditty@~2.0.0 compat
-        if (data.event === 'start'){
-          data = [144, data.id, data.args[0] || 127, data.position]
-        } else if (data.event === 'stop'){
-          data = [144, data.id, 0, data.position]
-        }
-      } else if (data.data){
-        data = data.data
-      }
-    }
-
     if (data[3] == null){
       data[3] = getPosition()
     }

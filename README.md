@@ -3,8 +3,6 @@ midi-looper
 
 Stream based midi loop maker. Buffers all input then creates loops on demand.
 
-Used as a primary component of [Loop Drop](https://github.com/mmckegg/loop-drop-app).
-
 ## Install
 
 ```bash
@@ -28,7 +26,7 @@ Stores a note in the buffer at the position returned by `getPosition()`.
 
 ### looper.pipe(destination) / looper.on('data')
 
-Whenever the playback changes (due to a `transform()` or `store()`), emits the new output playback in the [ditty format](https://github.com/mmckegg/ditty) (`{length: 8, notes: [[144, 60, 127, 0, 0.5], [144, 60, 127, 1, 0.5]]}` - array of [channel, note, velocity, position % length, noteLength])
+Whenever the playback changes (due to a `transform()` or `store()`), emits the new output playback e.g. (`{length: 8, notes: [[144, 60, 127, 0, 0.5], [144, 60, 127, 1, 0.5]]}` - array of [channel, note, velocity, position % length, noteLength])
 
 ### looper.store(length, preroll)
 
@@ -53,11 +51,11 @@ Bounce the final output with transforms applied back to the input and clear the 
 
 ### looper.getInput()
 
-Returns the current playback loop without transforms applied in the [ditty format](https://github.com/mmckegg/ditty)
+Returns the current playback loop without transforms applied.
 
 ### looper.getOutput()
 
-Returns the current playback loop **with transforms** applied in the [ditty format](https://github.com/mmckegg/ditty)
+Returns the current playback loop **with transforms** applied.
 
 ### looper.getLength()
 
@@ -75,7 +73,7 @@ Pass in an array of note keys (`"144/25"`) to suppress, or if `noteKeysToSuppres
 
 ### looper.transform('notes', notesToAppend)
 
-Add the specified notes in as an array in [ditty format](https://github.com/mmckegg/ditty) ([channel, note, velocity, position, duration])
+Add the specified notes in as an array ([channel, note, velocity, position, duration])
 
 ### looper.transform('repeat', midiNotesToRepeat, rate)
 
