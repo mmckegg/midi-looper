@@ -16,6 +16,7 @@
     "launchpad"
   ],
   "dependencies": {
+    "next-tick": "^0.2.2",
     "through": "~2.3.4"
   },
   "author": "Matt McKegg",
